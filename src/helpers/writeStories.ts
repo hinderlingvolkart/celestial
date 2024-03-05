@@ -6,9 +6,9 @@ import {STYLEGUIDE_PAGE_DIR} from "./constants.js";
 
 export function writeStory(story: CelestialStory): Promise<void> {
     return new Promise(resolve => {
-        const targetPath = story.config.docsPath;
+        const targetPath = story.config.docsPath.toLowerCase();
         ensureDirSync(targetPath);
-        const targetFile = path.join(targetPath, `${story.name}.astro`);
+        const targetFile = path.join(targetPath, `${story.name}.astro`).toLowerCase();
 
         writeFile(targetFile, story.content, (error) => {
             if (error) {

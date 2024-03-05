@@ -5,17 +5,25 @@ import {getDocs, loadDocs} from "../helpers/getDocs.js";
 import {writeAllStories, writeStory} from "../helpers/writeStories.js";
 import {CELESTIAL_TMP_SUBDIR, ORIG_COMPONENT_GLOB, ORIG_GLOB} from "../helpers/constants.js";
 import {execSync} from "child_process";
+import {copyStaticFiles, generateAstroConfig} from "../helpers/setup.js";
+import {writeMenu} from "../helpers/writeMenu.js";
 
 export async function watch() {
     console.log('⚗️ Starting Astro …');
+
+    console.log('⚗️ Generating styleguide base …');
+
+    await copyStaticFiles();
+    await generateAstroConfig();
+    const allStories = await getDocs();
+    await writeMenu(allStories);
 
     execSync(`astro dev --root ${CELESTIAL_TMP_SUBDIR}`,
         {stdio: 'inherit'}
     );
 
-    console.log('⚗️ Generating styleguide …');
+    console.log('⚗️ Generating styleguide stories …');
 
-    const allStories = await getDocs();
     await writeAllStories(allStories);
 
     console.log('💎 Finished generating styleguide');

@@ -23,7 +23,7 @@ export function generateMenu(stories: CelestialStory[]): string {
             } else {
                 const newEntry = {
                     name: folder,
-                    path: `${docsDirectory}/${storyName}`,
+                    path: `${docsDirectory}/${storyName}`.toLowerCase(),
                     children: []
                 };
 
@@ -33,7 +33,7 @@ export function generateMenu(stories: CelestialStory[]): string {
             }
         })
 
-        const storyPath = `${docsDirectory}/${storyName}`;
+        const storyPath = `${docsDirectory}/${storyName}`.toLowerCase();
         target.push({
             name: storyName,
             path: storyPath
