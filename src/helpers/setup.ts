@@ -19,7 +19,7 @@ export function generateAstroConfig(): Promise<void> {
 
 export default defineConfig({
     output: 'static',
-    outDir: '${config.outDir}',
+    outDir: '../${config.outDir}',
     cacheDir: './.cache',
     server: { port: ${config.port} },
     devToolbar: { enabled: false }

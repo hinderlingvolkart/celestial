@@ -12,8 +12,8 @@ const href =
   Tag === "button" ? undefined : isSingleStory ? `/${children[0].path}` : path;
 
 const pathWithoutStory = path.split("/").slice(0, -1).join("/");
-const isActive = path === activePath;
-const isExpanded = activePath && activePath.startsWith(pathWithoutStory);
+const isActive = path?.toLowerCase() === activePath?.toLowerCase();
+const isExpanded = activePath && activePath.toLowerCase().startsWith(pathWithoutStory?.toLowerCase());
 ---
 
 <Tag
@@ -22,7 +22,8 @@ const isExpanded = activePath && activePath.startsWith(pathWithoutStory);
   aria-expanded={isExpanded && Tag === "button" ? "true" : undefined}
   data-sidebar-toggle={Tag === "button" ? true : undefined}
   style={{ "--docs-i-sidebar-depth": depth || 0 }}
-  data-sidebar-path={pathWithoutStory}
+  data-sidebar-path={pathWithoutStory.toLowerCase()}
+  data-sidebar-active-path={activePath?.toLowerCase() || 'no-active-path'}
 >
   <span class="button-content">
     {name}

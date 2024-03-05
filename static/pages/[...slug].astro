@@ -10,9 +10,10 @@ export function getStaticPaths() {
 }
 const { slug } = Astro.params;
 const iframeUrl = `/fragments/${slug}`;
+const activePath = slug.startsWith('/') ? slug : `/${slug}`;
 ---
 
-<LayoutMain title="Welcome to Astro." entries={menu.menu} activePath={`/${slug}`}>
+<LayoutMain title="Welcome to Astro." entries={menu.menu} activePath={activePath}>
     <Frame url={iframeUrl} />
 </LayoutMain>
 
