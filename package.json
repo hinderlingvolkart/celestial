@@ -1,5 +1,5 @@
 {
-	"name": "celestial",
+	"name": "@hv/celestial",
 	"type": "module",
 	"version": "0.0.13",
 	"description": "A styleguide for documenting your Astro-components",
