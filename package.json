@@ -1,0 +1,41 @@
+{
+	"name": "celestial",
+	"type": "module",
+	"version": "0.0.13",
+	"description": "A styleguide for documenting your Astro-components",
+	"bin": {
+		"celestial": "./dist/cli.js"
+	},
+	"engines": {
+		"node": ">=16.0.0"
+	},
+	"exports": "./dist/index.js",
+	"dependencies": {
+		"@types/fs-extra": "^11.0.4",
+		"@types/node": "^20.11.24",
+		"chokidar": "^3.6.0",
+		"fs-extra": "^11.2.0",
+		"glob": "^10.3.10",
+		"typescript": "^5.3.3"
+	},
+	"scripts": {
+		"build": "tsc --build --clean && tsc --build"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/hinderlingvolkart/celestial"
+	},
+	"keywords": [
+		"styleguide",
+		"Astro",
+		"celestial",
+		"javascript",
+		"typescript"
+	],
+	"author": "hv-pul",
+	"license": "GPL-3.0-only",
+	"bugs": {
+		"url": "https://github.com/hinderlingvolkart/celestial/issues"
+	},
+	"homepage": "https://github.com/hinderlingvolkart/celestial#readme"
+}

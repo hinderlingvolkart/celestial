@@ -1,0 +1,163 @@
+---
+import type { DocsMenuEntry } from "../../types";
+export interface Props extends DocsMenuEntry {
+  depth?: number;
+  activePath: string;
+}
+
+const { name, children, path, depth, activePath } = Astro.props;
+const isSingleStory = children?.length === 1 && !children[0].children;
+const Tag = children?.length && !isSingleStory ? "button" : "a";
+const href =
+  Tag === "button" ? undefined : isSingleStory ? `/${children[0].path}` : path;
+
+const pathWithoutStory = path.split("/").slice(0, -1).join("/");
+const isActive = path === activePath;
+const isExpanded = activePath && activePath.startsWith(pathWithoutStory);
+---
+
+<Tag
+  class:list={["button", { "button--is-active": isActive }]}
+  href={href}
+  aria-expanded={isExpanded && Tag === "button" ? "true" : undefined}
+  data-sidebar-toggle={Tag === "button" ? true : undefined}
+  style={{ "--docs-i-sidebar-depth": depth || 0 }}
+  data-sidebar-path={pathWithoutStory}
+>
+  <span class="button-content">
+    {name}
+  </span>
+</Tag>
+{
+  children?.length && !isSingleStory && (
+    <ul>
+      {children.map((entry) => (
+        <li>
+          <Astro.self
+            name={entry.name}
+            children={entry.children}
+            activePath={activePath}
+            path={entry.path}
+            depth={(depth || 0) + 1}
+          />
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<script>
+  const buttons = document.querySelectorAll("[data-sidebar-toggle]");
+
+  buttons.forEach((button) => {
+    if (!(button instanceof HTMLElement)) {
+      return;
+    }
+
+    button.addEventListener("click", (event) => {
+      if (!(event.target instanceof HTMLElement)) {
+        return;
+      }
+
+      const button = event.target.closest("button");
+
+      if (!button) {
+        return;
+      }
+
+      const isExpanded = button.getAttribute("aria-expanded") === "true";
+      button.setAttribute("aria-expanded", isExpanded ? "false" : "true");
+
+      if (!isExpanded) {
+        const firstChild =
+          button.nextElementSibling?.querySelector(":scope > li > a");
+        firstChild instanceof HTMLElement && firstChild.click();
+      }
+    });
+  });
+</script>
+
+<style>
+  ul {
+    display: none;
+  }
+
+  .button {
+    display: block;
+    position: relative;
+    font-size: 0.85rem;
+    letter-spacing: 0.025em;
+    padding-top: calc(var(--docs-i-pad) * 0.35);
+    padding-left: calc(
+      var(--docs-i-pad) + var(--docs-i-sidebar-depth) * var(--docs-i-pad)
+    );
+    padding-right: var(--docs-i-pad);
+    padding-bottom: calc(var(--docs-i-pad) * 0.35);
+    cursor: pointer;
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0px 8px;
+      background-color: var(--docs-i-color-text);
+      opacity: 0;
+      border-radius: 4px;
+      transform: scale(0.1);
+      transition:
+        opacity 0.2s,
+        transform 0.2s;
+    }
+
+    &:hover {
+      &::before {
+        transform: scale(1);
+        opacity: 0.1;
+      }
+    }
+  }
+
+  a.button {
+    color: var(--docs-i-color-accent);
+
+    &::before {
+      background-color: var(--docs-i-color-accent);
+    }
+
+    &.button--is-active {
+      &::before {
+        transform: scale(1);
+        opacity: 0.1;
+      }
+    }
+  }
+
+  button.button {
+    width: 100%;
+
+    .button-content {
+      &::before {
+        content: "➕";
+        padding-right: 0.25em;
+      }
+    }
+
+    &[aria-expanded="true"] {
+      .button-content {
+        &::before {
+          content: "➖";
+          padding-right: 0.25em;
+        }
+      }
+
+      & + ul {
+        display: block;
+      }
+    }
+  }
+
+  .button-content {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+</style>

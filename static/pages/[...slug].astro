@@ -1,0 +1,20 @@
+---
+import LayoutMain from '../layouts/LayoutMain.astro';
+import Frame from '../components/Frame.astro';
+import menu from '../menu.json';
+
+export function getStaticPaths() {
+    return  menu.allPaths.map(path => ({
+        params: { slug: path }
+    }));
+}
+const { slug } = Astro.params;
+const iframeUrl = `/fragments/${slug}`;
+---
+
+<LayoutMain title="Welcome to Astro." entries={menu.menu} activePath={`/${slug}`}>
+    <Frame url={iframeUrl} />
+</LayoutMain>
+
+<style>
+</style>

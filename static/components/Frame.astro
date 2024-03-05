@@ -1,0 +1,41 @@
+---
+
+interface Props {
+    url: string;
+}
+
+const { url } = Astro.props;
+---
+
+<div class="wrapper">
+    <iframe class="iframe" src={url}></iframe>
+    <!--
+    <div class="info">
+        <h3>Component Card</h3>
+        <p>Props:</p>
+    </div>
+    -->
+</div>
+
+<style>
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.iframe {
+    flex: 1 1 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    overflow-y: auto;
+}
+
+.info {
+    flex: 0 0 auto;
+    border-top: 1px solid lightgray;
+    padding: 0.5rem;
+}
+</style>
