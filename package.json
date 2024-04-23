@@ -1,7 +1,7 @@
 {
 	"name": "@hv/celestial",
 	"type": "module",
-	"version": "0.0.24",
+	"version": "0.1.0",
 	"description": "A styleguide for documenting your Astro-components",
 	"bin": {
 		"celestial": "dist/cli.js"
