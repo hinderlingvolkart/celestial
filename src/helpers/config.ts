@@ -1,6 +1,5 @@
 import path from "node:path";
 import fs from "node:fs";
-import {WORKSPACE_ROOT} from "./constants.js";
 import {CelestialConfig} from "../types.js";
 
 export const CONFIG_NAME = 'celestial.config.json';
