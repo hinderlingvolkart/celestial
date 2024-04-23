@@ -7,15 +7,15 @@ export interface Props extends CelestialMenuEntry {
 
 const { name, children, path, depth, activePath } = Astro.props;
 const isSingleStory = children?.length === 1 && !children[0].children;
+const pathWithSingleStory = isSingleStory ? children[0].path: path;
 const Tag = children?.length && !isSingleStory ? "button" : "a";
 const href =
   Tag === "button" ? undefined : isSingleStory ? children[0].path : path;
 
-const pathWithoutStory = path.split("/").slice(0, -1).join("/");
-const isActive = path?.toLowerCase() === activePath?.toLowerCase();
+const isActive = pathWithSingleStory === activePath;
 const isExpanded =
   activePath &&
-  activePath.toLowerCase().startsWith(pathWithoutStory?.toLowerCase());
+  activePath.toLowerCase().startsWith(pathWithSingleStory);
 ---
 
 <Tag
@@ -24,8 +24,8 @@ const isExpanded =
   aria-expanded={isExpanded && Tag === "button" ? "true" : undefined}
   data-sidebar-toggle={Tag === "button" ? true : undefined}
   style={{ "--docs-i-sidebar-depth": depth || 0 }}
-  data-sidebar-path={pathWithoutStory.toLowerCase()}
-  data-sidebar-active-path={activePath?.toLowerCase() || "no-active-path"}
+  data-sidebar-path={pathWithSingleStory}
+  data-sidebar-active-path={activePath || "no-active-path"}
 >
   <span class="button-content">
     {name}

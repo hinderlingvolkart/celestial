@@ -2,17 +2,49 @@
 import {slugify} from "../../dist/helpers/string.js";
 interface Props {
     title: string;
+    layout: 'fullscreen' | 'center';
+    background: 'default' | 'dark' | string;
 }
 
-const { title } = Astro.props;
+const { title, layout, background } = Astro.props;
 const { slug } = Astro.params;
 const show = slugify(title) === slug;
+const backgroundClass = ['default', 'dark'].includes(background) ?  background : !background ? 'default' : 'color';
 ---
 
-{ show && <div data-celestial-story={slugify(title)}>
-    <slot />
-</div> }
+{ show &&
+    <div
+        class:list={[`layout--${layout || 'center'}`, `background--${backgroundClass}`]}
+        data-celestial-doc={slugify(title)}
+    >
+      <slot />
+    </div>
+}
 
-<style>
+<style define:vars={{ 'docs-local-background': background }}>
+.layout--center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh;
+}
 
+.layout--fullscreen {
+    width: 100%;
+    min-height: 100vh;
+}
+
+.background--default {
+    background-color: white;
+}
+
+
+.background--dark {
+    background-color: #333;
+}
+
+.background--color {
+    background-color: var(--docs-local-background);
+}
 </style>

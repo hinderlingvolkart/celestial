@@ -3,18 +3,21 @@ import type {CelestialDoc} from "../../types.ts";
 import {STYLEGUIDE_LAYOUT_DIR, WORKSPACE_ROOT} from "../../helpers/constants.js";
 import {getParamsForSubdoc} from "../../helpers/string.js";
 import {existsSync} from "node:fs";
+import {getConfig} from "../../helpers/config.js";
 
 export function generateDocsPage(targetPath: string, doc: CelestialDoc): string {
+    const config = getConfig();
+
     const layoutPath = path.join(STYLEGUIDE_LAYOUT_DIR, `LayoutInner.astro`);
-    const customHeadPath = path.join(WORKSPACE_ROOT, `celestial.doc-head.astro`);
-    const customFooterPath = path.join(WORKSPACE_ROOT, `celestial.doc-footer.astro`);
+    const customHeadPath = path.join(WORKSPACE_ROOT, config.docHead || '');
+    const customFooterPath = path.join(WORKSPACE_ROOT, config.docFooter || '');
     const relativeLayoutPath = path.relative(targetPath, layoutPath);
     const relativeStoryPath = path.relative(targetPath, doc.docPath);
     const relativeCustomHeadPath = path.relative(targetPath, customHeadPath);
     const relativeCustomFooterPath = path.relative(targetPath, customFooterPath);
 
-    const hasCustomHead = existsSync(customHeadPath);
-    const hasCustomFooter = existsSync(customFooterPath);
+    const hasCustomHead = config.docHead && existsSync(customHeadPath);
+    const hasCustomFooter = config.docFooter && existsSync(customFooterPath);
 
     return `---
 import type { GetStaticPaths } from "astro";

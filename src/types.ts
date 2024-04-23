@@ -2,6 +2,11 @@ export interface CelestialConfig {
     srcDir: string;
     outDir: string;
     port: number;
+    logo: string;
+    docHead: string;
+    docFooter: string;
+    navHead: string;
+    navFooter: string;
 }
 
 export type CelestialPropType = Record<symbol, any>;
@@ -30,6 +35,6 @@ export interface CelestialDoc {
     path: string, // Base path – e.g. /components/base/Button
     slug: string, // Name in slug form – eg. contact-button
     pathSlug: string, // Base path in slug form – e.g. components/base-components/contact-button
-    docPath: string // Full path to docs – e.g. /file/system/components/base/Button/Button.docs.astro,
+    docPath: string // Full path to docs – e.g. /file/system/components/base/Button/ButtonDocs.astro,
     subDocs: CelestialSubDocs
 }

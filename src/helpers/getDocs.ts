@@ -1,9 +1,8 @@
 import path from "node:path";
 import { existsSync, readFileSync } from "node:fs";
 import { glob } from "glob";
-// import {generateStoryPage} from "../lib/generators/generateStoryPage.js";
 import type {CelestialDoc} from "../types.ts";
-import {ORIG_COMPONENTS_DIR, ORIG_GLOB, STYLEGUIDE_PAGE_DIR} from "./constants.js";
+import {ORIG_COMPONENTS_DIR, ORIG_GLOB} from "./constants.js";
 import {getSubDocsFromDocsFile} from "./subDocs.js";
 import {slugify, slugifyPath} from "./string.js";
 
@@ -15,7 +14,7 @@ export async function loadDocs(docPath: string): Promise<CelestialDoc[]> {
         const fileName = docPath.split('/').at(-1) || '';
         const componentName = fileName.split('.').at(0) || '';
         const basePath = docPath
-            .replace('.docs.astro', '');
+            .replace('Docs.astro', '');
 
         const componentExtensions = possibleExtensions.filter(extension => {
             const checkComponentPath = `${basePath}.${extension}`;

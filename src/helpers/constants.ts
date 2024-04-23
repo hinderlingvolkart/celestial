@@ -13,5 +13,5 @@ export const STYLEGUIDE_PAGE_DIR = path.join(STYLEGUIDE_SRC_DIR, 'pages', 'fragm
 export const ORIG_DIR = path.join(WORKSPACE_ROOT, config.srcDir || '');
 export const ORIG_SRC_DIR = path.join(ORIG_DIR, 'src');
 export const ORIG_COMPONENTS_DIR = path.join(ORIG_SRC_DIR, 'components');
-export const ORIG_GLOB = `${ORIG_SRC_DIR}/**/*.docs.astro`;
+export const ORIG_GLOB = `${ORIG_SRC_DIR}/**/*Docs.astro`;
 export const ORIG_COMPONENT_GLOB = `${ORIG_SRC_DIR}/**/*.{astro,vue,svelte,jsx}`;

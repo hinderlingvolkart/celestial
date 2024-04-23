@@ -1,6 +1,8 @@
 ---
 import type { CelestialMenuEntry } from "../../src/types";
 import SidebarEntry from "./SidebarEntry.astro";
+import defaultLogo from "../celestial-logo.svg";
+import config from '../../../celestial.config.json';
 
 export interface Props {
   entries: CelestialMenuEntry[];
@@ -8,12 +10,17 @@ export interface Props {
 }
 
 const { entries, activePath } = Astro.props;
+
+
+const ensureStartingSlash = (input: string): string =>  input.startsWith('/') ? input : `/${input}`;
+const logoFromConfig = config.logo ? ensureStartingSlash(config.logo) : null;
 ---
 
-<nav class="wrapper">
-  <h2 class="headline">
-    <slot name="headline"> Styleguide </slot>
-  </h2>
+<nav class="wrapper" data-celestial-sidebar>
+  <header class="header">
+    <img class="logo" src={logoFromConfig || defaultLogo.src} alt={config.logo} />
+    <h2 class="headline">Styleguide</h2>
+  </header>
   {
     entries && (
       <ul>
@@ -36,16 +43,64 @@ const { entries, activePath } = Astro.props;
   .wrapper {
     width: 12.5em;
     min-width: 100px;
+    flex: 0 0 auto;
     resize: horizontal;
     overflow: auto;
     padding-top: max(0.5rem, var(--docs-i-pad));
     padding-bottom: max(0.5rem, var(--docs-i-padding));
   }
 
+  .header {
+      padding-left: var(--docs-i-pad);
+      padding-right: var(--docs-i-pad);
+      margin-bottom: 1rem;
+  }
+
+  .logo {
+      width: 100%;
+      max-width: 190px;
+  }
+
   .headline {
-    font-weight: bold;
-    padding-left: var(--docs-i-pad);
-    padding-right: var(--docs-i-pad);
-    margin-bottom: 1rem;
+      position: relative;
+      margin-top: calc(var(--docs-i-pad)* 0.5);
+      padding-bottom: calc(var(--docs-i-pad)* 0.75);
+      font-size: 0.925em;
+      color: var(--docs-i-color-text);
+  }
+
+  .headline::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      display: block;
+      width: 100%;
+      height: 1px;
+      background: var(--docs-i-color-text);
+      opacity: 0.25;
   }
 </style>
+
+<script>
+const lsKey = 'celestial:nav-width';
+const el = document.querySelector('[data-celestial-sidebar]');
+let timeout;
+const saveWidth = () => {
+    timeout && window.clearTimeout(timeout);
+
+    timeout = window.setTimeout(() => {
+        const width = el && el.clientWidth;
+        localStorage.setItem(lsKey, width);
+    }, 100)
+}
+
+const observer = new ResizeObserver(saveWidth);
+observer.observe(el);
+
+const currentWidth = localStorage.getItem(lsKey);
+
+if (currentWidth) {
+    el.style.width = `${currentWidth}px`;
+}
+</script>
