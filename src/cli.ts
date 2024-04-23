@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import {generate} from "./index.js";
-import {watch} from "./entryPoints/watch.js";
+import {generate} from "./lib/cli/generate.js";
+import {watch} from "./lib/cli/watch.js";
 
 const [,, args] = process.argv;
 

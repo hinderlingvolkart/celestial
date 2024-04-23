@@ -1,0 +1,18 @@
+---
+import {slugify} from "../../src/helpers/string";
+interface Props {
+    title: string;
+}
+
+const { title } = Astro.props;
+const { slug } = Astro.params;
+const show = slugify(title) === slug;
+---
+
+{ show && <div data-celestial-story={slugify(title)}>
+    <slot />
+</div> }
+
+<style>
+
+</style>

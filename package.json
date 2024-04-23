@@ -9,17 +9,21 @@
 	"engines": {
 		"node": ">=16.0.0"
 	},
-	"exports": "./dist/index.js",
+	"exports": {
+		".": "./dist/index.js",
+		"./components/": "./static/components/"
+	},
 	"dependencies": {
 		"@types/fs-extra": "^11.0.4",
 		"@types/node": "^20.11.24",
 		"chokidar": "^3.6.0",
 		"fs-extra": "^11.2.0",
 		"glob": "^10.3.10",
+		"linkedom": "^0.16.11",
 		"typescript": "^5.3.3"
 	},
 	"scripts": {
-		"build": "tsc --build --clean && tsc --build"
+		"build": "tsc --build --clean && tsc --build && chmod +x dist/cli.js"
 	},
 	"repository": {
 		"type": "git",

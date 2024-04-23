@@ -1,10 +1,10 @@
 ---
-import Sidebar from '../components/Sidebar.astro';
-import type { Props as SidebarProps } from '../components/Sidebar.astro';
+import Sidebar from "../components/Sidebar.astro";
+import type { Props as SidebarProps } from "../components/Sidebar.astro";
 interface Props {
-	title: string;
-	entries: SidebarProps['entries'];
-	activePath: string;
+  title: string;
+  entries: SidebarProps["entries"];
+  activePath: string;
 }
 
 const { title, entries, activePath } = Astro.props;
@@ -12,69 +12,77 @@ const { title, entries, activePath } = Astro.props;
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content="Astro description" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-	</head>
-	<body>
-		<div class="wrapper">
-			<Sidebar entries={entries} activePath={activePath} />
-			<div class="content">
-				<slot />				
-			</div>
-		</div>
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Astro description" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <Sidebar entries={entries} activePath={activePath} />
+      <div class="content">
+        <slot />
+      </div>
+    </div>
+  </body>
 </html>
 <style is:global>
-	:root {
-		--docs-i-pad: var(--docs-pad, 16px);
-		--docs-i-color-accent: var(--docs-color-accent, #4c06d0);
-		--docs-i-color-text: var(--docs-color-text, #222);
-	}
+  :root {
+    --docs-i-pad: var(--docs-pad, 16px);
+    --docs-i-color-accent: var(--docs-color-accent, #4c06d0);
+    --docs-i-color-text: var(--docs-color-text, #222);
+  }
 
-	* {
-		margin: 0;
-		padding: 0;
-		font: inherit;
-		color: inherit;
-	}
+  * {
+    margin: 0;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+  }
 
-	a {
-		text-decoration: none;
-	}
+  a {
+    text-decoration: none;
+  }
 
-	button {
-		appearance: none;
-		background: none;
-		border: none;
-		text-align: left;
-	}
+  button {
+    appearance: none;
+    background: none;
+    border: none;
+    text-align: left;
+  }
 
-	ul {
-		list-style: none;
-	}
+  ul {
+    list-style: none;
+  }
 </style>
 <style>
-	.wrapper {
-		font-family: var(--docs-font-family, system-ui, -apple-system, BlinkMacSystemFont, 'Open Sans', 'Helvetica Neue', sans-serif);
-		position: fixed;
-		inset: 0;
-		display: flex;
-		background: var(--docs-bg-outer, #F4F4F4);
-		color: var(--docs-i-color-text);
-	}
+  .wrapper {
+    font-family: var(
+      --docs-font-family,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Open Sans",
+      "Helvetica Neue",
+      sans-serif
+    );
+    position: fixed;
+    inset: 0;
+    display: flex;
+    background: var(--docs-bg-outer, #f4f4f4);
+    color: var(--docs-i-color-text);
+  }
 
-	.content {
-		width: calc(100% - var(--docs-i-pad));
-		height: calc(100% - 2 * var(--docs-i-pad));
-		margin-top: var(--docs-i-pad);
-		margin-right: var(--docs-i-pad);
-		background: var(--docs-bg-inner, #FFFFFF);
-		box-shadow: var(--docs-shadow-inner, 0px 0px 6px 2px rgba(0,0,0,.05));
-		border-radius: var(--docs-radius-inner, 6px);
-	}
+  .content {
+    width: calc(100% - var(--docs-i-pad));
+    height: calc(100% - 2 * var(--docs-i-pad));
+    margin-top: var(--docs-i-pad);
+    margin-right: var(--docs-i-pad);
+    background: var(--docs-bg-inner, #ffffff);
+    box-shadow: var(--docs-shadow-inner, 0px 0px 6px 2px rgba(0, 0, 0, 0.05));
+    border-radius: var(--docs-radius-inner, 6px);
+  }
 </style>

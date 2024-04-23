@@ -23,22 +23,13 @@ export interface CelestialBase {
     template: string;
 }
 
-export interface Celestial extends CelestialProps {
-    _celestialBase: CelestialBase;
-}
+export type CelestialSubDocs = Set<string>;
 
-export interface CelestialStoryConfig {
-    layout: CelestialFrameLayout,
-    template: string,
-    componentName: string,
-    componentPath: string,
-    docsPath: string,
-    docsDirectory: string,
-    props: CelestialProps
-}
-
-export interface CelestialStory {
-    name: string;
-    config: CelestialStoryConfig;
-    content: string;
+export interface CelestialDoc {
+    name: string, // Name only – e.g. Button
+    path: string, // Base path – e.g. /components/base/Button
+    slug: string, // Name in slug form – eg. contact-button
+    pathSlug: string, // Base path in slug form – e.g. components/base-components/contact-button
+    docPath: string // Full path to docs – e.g. /file/system/components/base/Button/Button.docs.astro,
+    subDocs: CelestialSubDocs
 }

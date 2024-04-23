@@ -1,25 +1,24 @@
 import path from "node:path";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { glob } from "glob";
-import {generateStoryPage} from "./generateStoryPage.js";
-import type {Celestial, CelestialStory, CelestialStoryConfig} from "../types.ts";
+// import {generateStoryPage} from "../lib/generators/generateStoryPage.js";
+import type {CelestialDoc} from "../types.ts";
 import {ORIG_COMPONENTS_DIR, ORIG_GLOB, STYLEGUIDE_PAGE_DIR} from "./constants.js";
+import {getSubDocsFromDocsFile} from "./subDocs.js";
+import {slugify, slugifyPath} from "./string.js";
 
 const possibleExtensions = ['astro', 'vue', 'svelte', 'jsx'];
-export async function loadDocs(docPath: string): Promise<CelestialStory[]> {
-    const cacheBuster = `?version=${Date.now()}`; // force re-importing module on changed
-    const docsModule = await import(`${docPath}${cacheBuster}`);
-    const stories: CelestialStory[] = [];
+export async function loadDocs(docPath: string): Promise<CelestialDoc[]> {
+    const docs: CelestialDoc[] = [];
 
     try {
-        const fullName = docPath.split('/').at(-1) || '';
-        const componentName = fullName.split('.').at(0) || '';
-        const componentBasePath = docPath
-            .replace('.docs.js', '')
-            .replace('.docs.ts', '');
+        const fileName = docPath.split('/').at(-1) || '';
+        const componentName = fileName.split('.').at(0) || '';
+        const basePath = docPath
+            .replace('.docs.astro', '');
 
         const componentExtensions = possibleExtensions.filter(extension => {
-            const checkComponentPath = `${componentBasePath}.${extension}`;
+            const checkComponentPath = `${basePath}.${extension}`;
             return existsSync(checkComponentPath);
         })
 
@@ -31,31 +30,19 @@ export async function loadDocs(docPath: string): Promise<CelestialStory[]> {
             throw new Error(`⚠️ Multiple components with different filetypes found for docs at ${docPath}, skipping this file`);
         }
 
-        const componentPath = `${componentBasePath}.${componentExtensions[0]}`;
-        const componentsDirectory = componentBasePath.replace(ORIG_COMPONENTS_DIR, '').replace(`/${componentName}`, '');
-        const docsDirectory = path.join(componentsDirectory, componentName);
-        const docsPath = path.join(STYLEGUIDE_PAGE_DIR, docsDirectory);
+        const path = basePath.replace(ORIG_COMPONENTS_DIR, '');
 
-        for (const [storyName, storyConfig ] of Object.entries(docsModule)) {
-            const docs = storyConfig as unknown as Celestial;
-            const { _celestialBase: base, ...props } = docs;
-            const config: CelestialStoryConfig = {
-                ...base,
-                componentName,
-                componentPath,
-                docsPath,
-                docsDirectory,
-                props
-            };
+        const originalContent = readFileSync(docPath, 'utf-8');
+        const subDocs = getSubDocsFromDocsFile(originalContent);
 
-            const content = generateStoryPage(config);
-
-            stories.push({
-                name: storyName,
-                config,
-                content
-            });
-        }
+        docs.push({
+            name: componentName,
+            slug: slugify(componentName),
+            path,
+            pathSlug: slugifyPath(path),
+            docPath,
+            subDocs
+        });
     } catch(error: unknown) {
         if (error instanceof Error && error.message) {
             console.warn(error.message);
@@ -64,12 +51,13 @@ export async function loadDocs(docPath: string): Promise<CelestialStory[]> {
         }
     }
 
-    return stories;
+    return docs;
 }
 
-export async function getDocs(): Promise<CelestialStory[]> {
+export async function getDocs(): Promise<CelestialDoc[]> {
     const docPaths = await glob(ORIG_GLOB);
-    let loadedStories: CelestialStory[] = [];
+
+    let loadedStories: CelestialDoc[] = [];
 
     for (const docPath of docPaths) {
         const stories = await loadDocs(docPath);

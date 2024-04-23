@@ -1,6 +1,6 @@
 ---
-import type { DocsMenuEntry } from "../../types";
-export interface Props extends DocsMenuEntry {
+import type { CelestialMenuEntry } from "../../src/types";
+export interface Props extends CelestialMenuEntry {
   depth?: number;
   activePath: string;
 }
@@ -9,11 +9,13 @@ const { name, children, path, depth, activePath } = Astro.props;
 const isSingleStory = children?.length === 1 && !children[0].children;
 const Tag = children?.length && !isSingleStory ? "button" : "a";
 const href =
-  Tag === "button" ? undefined : isSingleStory ? `/${children[0].path}` : path;
+  Tag === "button" ? undefined : isSingleStory ? children[0].path : path;
 
 const pathWithoutStory = path.split("/").slice(0, -1).join("/");
 const isActive = path?.toLowerCase() === activePath?.toLowerCase();
-const isExpanded = activePath && activePath.toLowerCase().startsWith(pathWithoutStory?.toLowerCase());
+const isExpanded =
+  activePath &&
+  activePath.toLowerCase().startsWith(pathWithoutStory?.toLowerCase());
 ---
 
 <Tag
@@ -23,7 +25,7 @@ const isExpanded = activePath && activePath.toLowerCase().startsWith(pathWithout
   data-sidebar-toggle={Tag === "button" ? true : undefined}
   style={{ "--docs-i-sidebar-depth": depth || 0 }}
   data-sidebar-path={pathWithoutStory.toLowerCase()}
-  data-sidebar-active-path={activePath?.toLowerCase() || 'no-active-path'}
+  data-sidebar-active-path={activePath?.toLowerCase() || "no-active-path"}
 >
   <span class="button-content">
     {name}

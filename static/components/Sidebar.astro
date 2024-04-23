@@ -1,45 +1,51 @@
 ---
-import type { DocsMenuEntry } from '../../types';
-import SidebarEntry from './SidebarEntry.astro';
+import type { CelestialMenuEntry } from "../../src/types";
+import SidebarEntry from "./SidebarEntry.astro";
 
 export interface Props {
-	entries: DocsMenuEntry[];
-	activePath: string;
+  entries: CelestialMenuEntry[];
+  activePath: string;
 }
 
 const { entries, activePath } = Astro.props;
 ---
+
 <nav class="wrapper">
-	<h2 class="headline">
-		<slot name="headline">
-			Styleguide
-		</slot>
-	</h2>
-	{ entries &&
-		<ul>
-			{entries.map(entry => (
-				<li>
-					<SidebarEntry name={entry.name} children={entry.children} path={entry.path} activePath={activePath} />
-				</li>
-			))}
-		</ul>
-	}
+  <h2 class="headline">
+    <slot name="headline"> Styleguide </slot>
+  </h2>
+  {
+    entries && (
+      <ul>
+        {entries.map((entry) => (
+          <li>
+            <SidebarEntry
+              name={entry.name}
+              children={entry.children}
+              path={entry.path}
+              activePath={activePath}
+            />
+          </li>
+        ))}
+      </ul>
+    )
+  }
 </nav>
 
 <style>
-.wrapper {
-	width: 12.5em;
-	min-width: 100px;
-	resize: horizontal;
-	overflow: auto;
-	padding-top: max(0.5rem, var(--docs-i-pad));
-	padding-bottom: max(0.5rem, var(--docs-i-padding));
-}
+  .wrapper {
+    width: 12.5em;
+    min-width: 100px;
+    resize: horizontal;
+    overflow: auto;
+    padding-top: max(0.5rem, var(--docs-i-pad));
+    padding-bottom: max(0.5rem, var(--docs-i-padding));
+  }
 
-.headline {
-	font-weight: bold;
-	padding-left: var(--docs-i-pad);
-	padding-right: var(--docs-i-pad);
-	margin-bottom: 1rem;
-}
+  .headline {
+    font-weight: bold;
+    padding-left: var(--docs-i-pad);
+    padding-right: var(--docs-i-pad);
+    margin-bottom: 1rem;
+  }
 </style>

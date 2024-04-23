@@ -1,17 +1,17 @@
-import type {CelestialMenuEntry, CelestialStory} from "../types.ts";
+import type {CelestialDoc, CelestialMenuEntry} from "../../types.ts";
+import {slugify} from "../../helpers/string.js";
 
 function findEntry(entries: CelestialMenuEntry[], name: string): CelestialMenuEntry | undefined {
     return  entries.find(entry => entry.name === name);
 }
 
-export function generateMenu(stories: CelestialStory[]): string {
+export function generateMenu(docs: CelestialDoc[]): string {
     const allPaths = new Set<string>();
-    const menu = stories.reduce<CelestialMenuEntry[]>((collection, story) => {
-        const storyName = story.name;
-        const { docsDirectory } = story.config;
+    const menu = docs.reduce<CelestialMenuEntry[]>((collection, doc) => {
+        const { name, path, pathSlug, subDocs } = doc;
         let target = collection;
 
-        docsDirectory.split('/').filter(Boolean).forEach(folder => {
+        path.split('/').filter(Boolean).forEach((folder, index) => {
             const currentEntry = findEntry(target, folder);
 
             if (currentEntry) {
@@ -23,23 +23,24 @@ export function generateMenu(stories: CelestialStory[]): string {
             } else {
                 const newEntry = {
                     name: folder,
-                    path: `${docsDirectory}/${storyName}`.toLowerCase(),
+                    path: pathSlug,
                     children: []
                 };
 
                 target.push(newEntry);
                 target = newEntry.children;
-                allPaths.add(newEntry.path);
             }
         })
 
-        const storyPath = `${docsDirectory}/${storyName}`.toLowerCase();
-        target.push({
-            name: storyName,
-            path: storyPath
-        });
+        Array.from(subDocs).forEach(subDoc => {
+            const subPath = `${pathSlug}/${slugify(subDoc)}`;
+            allPaths.add(subPath);
 
-        allPaths.add(storyPath);
+            target.push({
+                name: subDoc,
+                path: subPath
+            })
+        })
 
         return collection;
     }, []);

@@ -1,20 +1,21 @@
 import path from "node:path";
 import { writeFile } from 'fs';
 import { emptyDirSync, ensureDirSync } from 'fs-extra';
-import type {CelestialStory} from "../types.ts";
+import type {CelestialDoc} from "../types.ts";
 import {STYLEGUIDE_PAGE_DIR} from "./constants.js";
+import {generateDocsPage} from "../lib/generators/generateDocsPage.js";
 
-export function writeStory(story: CelestialStory): Promise<void> {
+export function writeDoc(doc: CelestialDoc): Promise<void> {
     return new Promise(resolve => {
-        const targetPath = story.config.docsPath.toLowerCase();
+        const targetPath = path.join(STYLEGUIDE_PAGE_DIR, doc.pathSlug);
         ensureDirSync(targetPath);
-        const targetFile = path.join(targetPath, `${story.name}.astro`).toLowerCase();
+        const targetFile = path.join(targetPath, '[...slug].astro');
 
-        writeFile(targetFile, story.content, (error) => {
+        writeFile(targetFile, generateDocsPage(targetPath, doc), (error) => {
             if (error) {
                 console.warn('🚨 Could not write file', targetFile);
             } else {
-                console.log('💧 Generated doc page for', `${story.config.componentName} – ${story.name}`);
+                console.log('💧 Generated doc page', targetFile);
             }
 
             resolve();
@@ -22,10 +23,9 @@ export function writeStory(story: CelestialStory): Promise<void> {
     })
 }
 
-export async function writeAllStories(stories: CelestialStory[]) {
-    const targetPath = STYLEGUIDE_PAGE_DIR;
-    emptyDirSync(targetPath);
-    const storyGenerators: Promise<void>[] = stories.map(story => writeStory(story));
+export async function writeAllDocs(docs: CelestialDoc[]) {
+    emptyDirSync(STYLEGUIDE_PAGE_DIR);
+    const docCreators: Promise<void>[] = docs.map(doc => writeDoc(doc));
 
-    return Promise.all(storyGenerators);
+    return Promise.all(docCreators);
 }
