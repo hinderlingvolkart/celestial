@@ -3,8 +3,9 @@ import { existsSync, readFileSync } from "node:fs";
 import { glob } from "glob";
 import type {CelestialDoc} from "../types.ts";
 import {ORIG_COMPONENTS_DIR, ORIG_GLOB} from "./constants.js";
-import {getSubDocsFromDocsFile} from "./subDocs.js";
+import {getCode, getSubDocs} from "./subDocs.js";
 import {slugify, slugifyPath} from "./string.js";
+import {getAsDom} from "./parseAstro.js";
 
 const possibleExtensions = ['astro', 'vue', 'svelte', 'jsx'];
 export async function loadDocs(docPath: string): Promise<CelestialDoc[]> {
@@ -32,7 +33,10 @@ export async function loadDocs(docPath: string): Promise<CelestialDoc[]> {
         const path = basePath.replace(ORIG_COMPONENTS_DIR, '');
 
         const originalContent = readFileSync(docPath, 'utf-8');
-        const subDocs = getSubDocsFromDocsFile(originalContent);
+        const originalContentAsDocument = getAsDom(originalContent);
+        const subDocs = getSubDocs(originalContentAsDocument);
+        // const codeForSubDocs = getCode(originalContentAsDocument);
+        const code = originalContent.split('---').at(-1).replace(/`/g, '\`')
 
         docs.push({
             name: componentName,
@@ -40,7 +44,8 @@ export async function loadDocs(docPath: string): Promise<CelestialDoc[]> {
             path,
             pathSlug: slugifyPath(path),
             docPath,
-            subDocs
+            subDocs,
+            code
         });
     } catch(error: unknown) {
         if (error instanceof Error && error.message) {

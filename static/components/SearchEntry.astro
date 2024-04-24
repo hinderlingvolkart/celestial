@@ -1,0 +1,73 @@
+---
+import type {CelestialMenuEntry} from "../../src/types";
+export interface Props extends CelestialMenuEntry {
+    parents: string[]
+}
+
+const {name, children, path, parents} = Astro.props;
+---
+
+{ !children || !children.length
+    ? <li class="wrapper">
+        <a class="link" href={path}>
+            <small class="parents">
+                {parents.map((parent) =>
+                        <span>{parent}</span>
+                )}
+            </small>
+            <p class="name">{name}</p>
+        </a>
+    </li>
+    : children.map((child) =>
+        <Astro.self
+            name={child.name}
+            children={child.children}
+            path={child.path}
+            parents={[...parents, name]}
+        />
+    )
+}
+
+<style>
+	.link {
+		display: block;
+		position: relative;
+		font-size: 0.825rem;
+		letter-spacing: 0.025em;
+		padding-top: calc(var(--docs-i-pad) * 0.15);
+		padding-left: var(--docs-i-pad);
+		padding-right: var(--docs-i-pad);
+		padding-bottom: calc(var(--docs-i-pad) * 0.15);
+        color: var(--docs-i-color-accent);
+    }
+
+	.link::before {
+		content: "";
+		position: absolute;
+		inset: 0px 8px;
+        background-color: var(--docs-i-color-accent);
+		opacity: 0;
+		border-radius: 4px;
+		transform: scale(0.1);
+		transition: opacity 0.2s, transform 0.2s;
+	}
+
+	.link:hover::before {
+		transform: scale(1);
+		opacity: 0.1;
+	}
+
+    .parents {
+        font-size: 0.75em;
+        color: var(--docs-i-color-text-light);
+    }
+
+    .parents span:last-child:not(:first-child):before {
+        content: '>';
+        position: relative;
+        top: -0.05em;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+        font-size: 0.75em;
+    }
+</style>

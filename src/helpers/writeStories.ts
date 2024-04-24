@@ -17,7 +17,6 @@ export function writeDoc(doc: CelestialDoc): Promise<void> {
             } else {
                 console.log('💧 Generated doc page', targetFile);
             }
-
             resolve();
         });
     })

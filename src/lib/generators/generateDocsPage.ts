@@ -21,6 +21,7 @@ export function generateDocsPage(targetPath: string, doc: CelestialDoc): string 
 
     return `---
 import type { GetStaticPaths } from "astro";
+import { Code } from 'astro:components';
 import Layout from "${relativeLayoutPath}";
 import Page from "${relativeStoryPath}";
 ${ hasCustomHead ? 'import CustomHead from "' + relativeCustomHeadPath + '";' : 'const CustomHead = null;'};
@@ -34,6 +35,7 @@ export const getStaticPaths = (() => {
 ---
 <Layout title="${doc.name}">
   <Page />
+  <Code class="code" code=\`${doc.code}\` lang="js" theme="aurora-x" wrap />
 
   { CustomHead && <Fragment slot="head">
     <CustomHead />
@@ -42,4 +44,35 @@ export const getStaticPaths = (() => {
   { CustomFooter && <Fragment slot="footer">
     <CustomFooter />
   </Fragment> }
-</Layout>`;}
+</Layout>
+
+<style>
+.code {
+  display: none;
+  position: fixed;
+  inset: 0;
+  margin: 0;
+  font-size: 15px;
+  padding: 1.5em;
+  overflow-y: auto;
+}
+
+:global([data-celestial-view="code"]) .code {
+    display: block;
+}
+</style>
+
+<script>
+window.addEventListener('message', (event) => {
+    switch (event.data) {
+        case 'celestial:view:code':
+            document.documentElement.setAttribute('data-celestial-view', 'code')
+            break;
+        case 'celestial:view:component':
+            document.documentElement.setAttribute('data-celestial-view', 'component')
+            break;
+        default:
+            break;
+    }
+})
+</script>`;}

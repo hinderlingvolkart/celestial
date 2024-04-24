@@ -1,5 +1,4 @@
 ---
-
 interface Props {
     url: string;
 }
@@ -8,23 +7,47 @@ const { url } = Astro.props;
 ---
 
 <div class="wrapper">
-    <iframe class="iframe" src={url}></iframe>
+    <nav class="buttons" data-celestial-buttons>
+        <button class="button change-view" data-celestial-button="viewport-s">S</button>
+        <button class="button change-view" data-celestial-button="viewport-m">M</button>
+        <button class="button change-view" data-celestial-button="viewport-l">L</button>
+        <button class="button show-code" data-celestial-button="code">☷</button>
+        <a class="button" href={url} target="_blank">☞</a>
+    </nav>
+    <iframe class="iframe" src={url} data-celestial-iframe></iframe>
 </div>
 
 <style>
 .wrapper {
+    position: relative;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     width: 100%;
     height: 100%;
 }
 
+.buttons {
+    position: absolute;
+    top: -32px;
+    right: 0;
+    display: flex;
+    gap: calc(var(--docs-i-pad) * 0.5);
+}
+
 .iframe {
-    flex: 1 1 0;
-    width: 100%;
-    height: 100%;
+    width: var(--docs-i-framewidth, 100%);
+    height: var(--docs-i-frameheight, 100%);
     border: none;
     overflow-y: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.code {
+    display: none;
+    min-height: 100%;
+    padding: calc(var(--docs-i-pad) * 2);
 }
 
 .info {
@@ -32,4 +55,72 @@ const { url } = Astro.props;
     border-top: 1px solid lightgray;
     padding: 0.5rem;
 }
+
+.button {
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid var(--docs-i-color-text-light);
+    cursor: pointer;
+}
+
+.button:hover {
+    background: var(--docs-i-color-grey-lightest);
+}
+
+button.change-view {
+    font-size: 0.65em;
+}
+
+.button.show-code {
+    margin-left: 1em;
+}
 </style>
+
+<script>
+const iframe = document.querySelector('[data-celestial-iframe]');
+let isCodeVisible = false;
+
+const hideCode = () => {
+    isCodeVisible = false;
+    iframe.contentWindow.postMessage('celestial:view:component');
+}
+
+const toggleCode = () => {
+    if (isCodeVisible) {
+        hideCode();
+    } else {
+        isCodeVisible = true;
+        iframe.contentWindow.postMessage('celestial:view:code');
+    }
+}
+
+document.querySelector('[data-celestial-buttons]').addEventListener("click", (event) => {
+    const intent = event.target.dataset.celestialButton;
+
+    switch (intent) {
+        case 'viewport-s':
+            hideCode();
+            document.documentElement.style.setProperty('--docs-i-framewidth', '375px');
+            document.documentElement.style.setProperty('--docs-i-frameheight', '667px');
+            break;
+        case 'viewport-m':
+            hideCode();
+            document.documentElement.style.setProperty('--docs-i-framewidth', '768px');
+            document.documentElement.style.setProperty('--docs-i-frameheight', '1024px');
+            break;
+        case 'code':
+            toggleCode();
+            break;
+        default:
+            hideCode();
+            document.documentElement.style.setProperty('--docs-i-framewidth', '');
+            document.documentElement.style.setProperty('--docs-i-frameheight', '');
+            break;
+    }
+});
+</script>

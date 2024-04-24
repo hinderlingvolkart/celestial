@@ -1,6 +1,7 @@
 ---
 import type { CelestialMenuEntry } from "../../src/types";
 import SidebarEntry from "./SidebarEntry.astro";
+import SearchEntry from "./SearchEntry.astro";
 import defaultLogo from "../celestial-logo.svg";
 import config from '../../../celestial.config.json';
 
@@ -20,10 +21,13 @@ const logoFromConfig = config.logo ? ensureStartingSlash(config.logo) : null;
   <header class="header">
     <img class="logo" src={logoFromConfig || defaultLogo.src} alt={config.logo} />
     <h2 class="headline">Styleguide</h2>
+    <div class="search">
+        <input placeholder="search" data-celestial-search/>
+    </div>
   </header>
   {
     entries && (
-      <ul>
+      <ul class="nav">
         {entries.map((entry) => (
           <li>
             <SidebarEntry
@@ -33,6 +37,16 @@ const logoFromConfig = config.logo ? ensureStartingSlash(config.logo) : null;
               activePath={activePath}
             />
           </li>
+        ))}
+      </ul>
+      <ul class="search-results" data-celestial-searchresults>
+        {entries.map((entry) => (
+          <SearchEntry
+            name={entry.name}
+            children={entry.children}
+            path={entry.path}
+            parents={[]}
+          />
         ))}
       </ul>
     )
@@ -51,9 +65,25 @@ const logoFromConfig = config.logo ? ensureStartingSlash(config.logo) : null;
   }
 
   .header {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+      margin-bottom: 1rem;
       padding-left: var(--docs-i-pad);
       padding-right: var(--docs-i-pad);
-      margin-bottom: 1rem;
+      background-color: var(--docs-i-color-grey-lightest);
+  }
+
+  .header::after {
+      content: '';
+      display: block;
+      height: 1px;
+      position: absolute;
+      bottom: 0;
+      left: var(--docs-i-pad);
+      right: var(--docs-i-pad);
+      background: var(--docs-i-color-text);
+      opacity: 0.25;
   }
 
   .logo {
@@ -63,23 +93,50 @@ const logoFromConfig = config.logo ? ensureStartingSlash(config.logo) : null;
 
   .headline {
       position: relative;
-      margin-top: calc(var(--docs-i-pad)* 0.5);
-      padding-bottom: calc(var(--docs-i-pad)* 0.75);
-      font-size: 0.925em;
-      color: var(--docs-i-color-text);
+      margin-top: calc(var(--docs-i-pad) * 0.5);
+      padding-left: 0.35em;
+      padding-bottom: calc(var(--docs-i-pad) * 0.75);
+      font-size: 0.825em;
+      font-style: italic;
+      letter-spacing: 0.01em;
+      color: var(--docs-i-color-text-light);
   }
 
-  .headline::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      display: block;
-      width: 100%;
-      height: 1px;
-      background: var(--docs-i-color-text);
-      opacity: 0.25;
+  .search {
+      padding-bottom: calc(var(--docs-i-pad)* 0.75);
   }
+
+  .search input {
+      width: 100%;
+      font: inherit;
+      padding: 0.5em;
+      font-size: 0.825em;
+      letter-spacing: 0.02em;
+      border: none;
+      border-radius: 4px;
+  }
+
+  .search input:focus-visible {
+      outline-color: var(--docs-i-color-accent);
+  }
+
+  [data-celestial-searching] .nav {
+      display: none;
+  }
+
+  .search-results {
+      display: none;
+  }
+
+  [data-celestial-searching] .search-results {
+      display: block;
+  }
+</style>
+
+<style is:global>
+[data-celestial-searchresults] > [aria-hidden="true"] {
+    display: none;
+}
 </style>
 
 <script>
@@ -103,4 +160,34 @@ const currentWidth = localStorage.getItem(lsKey);
 if (currentWidth) {
     el.style.width = `${currentWidth}px`;
 }
+</script>
+
+<script>
+    const input = document.querySelector('[data-celestial-search]');
+    const wrapper = document.querySelector('[data-celestial-sidebar]');
+    const results = document.querySelector('[data-celestial-searchresults]');
+    let raf;
+
+    const updateSearchResults = (term) => {
+        Array.from(results.children).forEach(el => {
+            if (el.innerText.toLowerCase().includes(term)) {
+                el.setAttribute('aria-hidden', 'false');
+            } else {
+                el.setAttribute('aria-hidden', 'true');
+            }
+        })
+    }
+
+    input.addEventListener('input', () => {
+        const term = (input.value || '').trim();
+
+        if (term) {
+            wrapper.setAttribute('data-celestial-searching', term);
+
+            raf && window.cancelAnimationFrame(raf);
+            raf = window.requestAnimationFrame(() => updateSearchResults(term));
+        } else {
+            wrapper.removeAttribute('data-celestial-searching');
+        }
+    })
 </script>

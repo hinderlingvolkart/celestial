@@ -1,7 +1,7 @@
 {
 	"name": "@hv/celestial",
 	"type": "module",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "A styleguide for documenting your Astro-components",
 	"bin": {
 		"celestial": "dist/cli.js"
@@ -11,7 +11,7 @@
 	},
 	"exports": {
 		".": "./dist/index.js",
-		"./components/": "./static/components/"
+		"./Docs": "./static/components/Docs.astro"
 	},
 	"dependencies": {
 		"@types/fs-extra": "^11.0.4",

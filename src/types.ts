@@ -36,5 +36,6 @@ export interface CelestialDoc {
     slug: string, // Name in slug form – eg. contact-button
     pathSlug: string, // Base path in slug form – e.g. components/base-components/contact-button
     docPath: string // Full path to docs – e.g. /file/system/components/base/Button/ButtonDocs.astro,
-    subDocs: CelestialSubDocs
+    subDocs: CelestialSubDocs, // Titles of the single Docs components
+    code: string // source code for subDocs, key is slugified subDoc name
 }
