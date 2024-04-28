@@ -1,42 +1,39 @@
 import {CelestialDoc} from "../types.js";
 
-const accents: Array<{ search: string; replace: string }> = [
-    { search: 'ä', replace: 'ae' },
-    { search: 'ö', replace: 'oe' },
-    { search: 'ü', replace: 'ue' },
-    { search: 'ã', replace: 'a' },
-    { search: 'à', replace: 'a' },
-    { search: 'á', replace: 'a' },
-    { search: 'â', replace: 'a' },
-    { search: 'ẽ', replace: 'e' },
-    { search: 'è', replace: 'e' },
-    { search: 'é', replace: 'e' },
-    { search: 'ë', replace: 'e' },
-    { search: 'ê', replace: 'e' },
-    { search: 'ì', replace: 'i' },
-    { search: 'í', replace: 'i' },
-    { search: 'ï', replace: 'i' },
-    { search: 'î', replace: 'i' },
-    { search: 'õ', replace: 'o' },
-    { search: 'ò', replace: 'o' },
-    { search: 'ó', replace: 'o' },
-    { search: 'ô', replace: 'o' },
-    { search: 'ù', replace: 'u' },
-    { search: 'ú', replace: 'u' },
-    { search: 'û', replace: 'u' },
-    { search: 'ñ', replace: 'n' },
-    { search: 'ç', replace: 'c' }
-];
+const accents: Record<string, string> = {
+	ä: "ae",
+	ö: "oe",
+	ü: "ue",
+	ã: "a",
+	à: "a",
+	á: "a",
+	â: "a",
+	ẽ: "e",
+	è: "e",
+	é: "e",
+	ë: "e",
+	ê: "e",
+	ì: "i",
+	í: "i",
+	ï: "i",
+	î: "i",
+	õ: "o",
+	ò: "o",
+	ó: "o",
+	ô: "o",
+	ù: "u",
+	ú: "u",
+	û: "u",
+	ñ: "m",
+	ç: "c",
+};
 
 export function slugify(input: string): string {
     return input
         .toLowerCase()
         .normalize('NFC')
         .split('')
-        .map((char) => {
-            const accent = accents.find((a) => a.search === char);
-            return accent?.replace || char;
-        }) // Replace accents
+        .map((c: string) => accents[c] || c)
         .join('')
         .trim()
         .replace(/\/+/g, '--') // Replace / with --
