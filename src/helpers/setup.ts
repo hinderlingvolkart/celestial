@@ -7,7 +7,7 @@ import {
     ORIG_DIR,
     STYLEGUIDE_DIR,
     STYLEGUIDE_LAYOUT_DIR,
-    STYLEGUIDE_SRC_DIR
+    STYLEGUIDE_SRC_DIR, WORKSPACE_ROOT
 } from "./constants.js";
 import {layoutMainTemplate} from "../templates/LayoutMain.template.js";
 
@@ -41,10 +41,14 @@ export function generateLayoutMain(): Promise<void> {
 
 export function generateAstroConfig(): Promise<void> {
     const config = getConfig();
-    const fileName = path.join(STYLEGUIDE_DIR, 'astro.config.mjs');
+    // TODO: auto-guess config extension / make name configurable
+    const importPath = path.relative(STYLEGUIDE_DIR, path.join(ORIG_DIR, 'astro.config.mjs'));
+    const outputFileName = path.join(STYLEGUIDE_DIR, 'astro.config.mjs');
     const template = `import { defineConfig } from 'astro/config';
+import originalConfig from '${importPath}';
 
 export default defineConfig({
+    ...originalConfig,
     output: 'static',
     outDir: '../${config.outDir}',
     cacheDir: './.cache',
@@ -53,6 +57,6 @@ export default defineConfig({
 });`
 
     return new Promise(resolve => {
-        outputFile(fileName, template, () => resolve())
+        outputFile(outputFileName, template, () => resolve())
     });
 }
