@@ -12,10 +12,16 @@ const Tag = children?.length && !isSingleStory ? "button" : "a";
 const href =
   Tag === "button" ? undefined : isSingleStory ? children[0].path : path;
 
+const getSubPathForDepth = (path: string, depth: number | undefined): string => {
+    const pathWithoutLeadingSlash = path.startsWith('/') ? path.substring(1): path;
+    const part = pathWithoutLeadingSlash.split('/').slice(0, (depth || 0) + 1);
+    return part.join('/').toLowerCase();
+}
+
 const isActive = pathWithSingleStory === activePath;
 const isExpanded =
   activePath &&
-  activePath.toLowerCase().startsWith(pathWithSingleStory);
+  getSubPathForDepth(activePath, depth).startsWith(getSubPathForDepth(pathWithSingleStory, depth));
 ---
 
 <Tag

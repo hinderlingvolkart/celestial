@@ -22,9 +22,11 @@ export async function loadDocs(docPath: string): Promise<CelestialDoc[]> {
             return existsSync(checkComponentPath);
         })
 
+        /*
         if (!componentExtensions.length) {
             throw new Error(`⚠️ No component found for docs at ${docPath}, skipping this file`);
         }
+        */
 
         if (componentExtensions.length > 1) {
             throw new Error(`⚠️ Multiple components with different filetypes found for docs at ${docPath}, skipping this file`);
