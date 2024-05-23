@@ -2,8 +2,8 @@
 import {slugify} from "../../dist/helpers/string.js";
 interface Props {
     title: string;
-    layout: 'fullscreen' | 'center';
-    background: 'default' | 'dark' | string;
+    layout?: 'fullscreen' | 'center';
+    background?: 'default' | 'dark' | string;
 }
 
 const { title, layout, background } = Astro.props;
