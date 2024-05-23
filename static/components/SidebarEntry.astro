@@ -78,9 +78,17 @@ const isExpanded =
       button.setAttribute("aria-expanded", isExpanded ? "false" : "true");
 
       if (!isExpanded) {
-        const firstChild =
-          button.nextElementSibling?.querySelector(":scope > li > a");
-        firstChild instanceof HTMLElement && firstChild.click();
+        const listEl = button.nextElementSibling;
+        const hasSubfolders = !!listEl.querySelector(':scope > li > button');
+
+        if (hasSubfolders) {
+            return;
+        }
+
+        const firstStoryLinkEl = listEl.querySelector(":scope > li > a");
+        const firstStoryLinkHref = firstStoryLinkEl.getAttribute('href');
+
+        firstStoryLinkHref && (window.location.href = firstStoryLinkHref);
       }
     });
   });
