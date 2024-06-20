@@ -7,6 +7,7 @@ export interface CelestialConfig {
     docFooter: string;
     navHead: string;
     navFooter: string;
+    astroConfig?: string;
 }
 
 export type CelestialPropType = Record<symbol, any>;

@@ -42,7 +42,7 @@ export function generateLayoutMain(): Promise<void> {
 export function generateAstroConfig(): Promise<void> {
     const config = getConfig();
     // TODO: auto-guess config extension / make name configurable
-    const importPath = path.relative(STYLEGUIDE_DIR, path.join(ORIG_DIR, 'astro.config.mjs'));
+    const importPath = path.relative(STYLEGUIDE_DIR, path.join(ORIG_DIR, config.astroConfig || 'astro.config.mjs'));
     const outputFileName = path.join(STYLEGUIDE_DIR, 'astro.config.mjs');
     const template = `import { defineConfig } from 'astro/config';
 import originalConfig from '${importPath}';
