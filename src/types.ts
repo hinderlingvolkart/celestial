@@ -7,7 +7,8 @@ export interface CelestialConfig {
     docFooter: string;
     navHead: string;
     navFooter: string;
-    astroConfig?: string;
+    astroConfig?: string; // use to load a different config file than astro.config.mjs
+    copyAdditional?: string | string[]; // copy additional folders beside public to styleguide directory
 }
 
 export type CelestialPropType = Record<symbol, any>;

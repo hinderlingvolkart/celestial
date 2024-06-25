@@ -1,7 +1,12 @@
 import {emptyDirSync} from "fs-extra";
 import chokidar from 'chokidar';
 import {CELESTIAL_TMP_SUBDIR, ORIG_COMPONENT_GLOB, ORIG_GLOB} from "../../helpers/constants.js";
-import {copyPublicFiles, copyStaticFiles, generateAstroConfig, generateLayoutMain} from "../../helpers/setup.js";
+import {
+    copyAdditionalFilesAndFolders,
+    copyPublicFiles,
+    generateAstroConfig,
+    generateLayoutMain
+} from "../../helpers/setup.js";
 import {getDocs, loadDocs} from "../../helpers/getDocs.js";
 import {writeMenu} from "../../helpers/writeMenu.js";
 import {writeAllDocs, writeDoc} from "../../helpers/writeStories.js";
@@ -13,8 +18,8 @@ export async function watch() {
     console.log('⚗️ Generating styleguide base …');
 
     emptyDirSync(CELESTIAL_TMP_SUBDIR);
-    await copyStaticFiles();
     await copyPublicFiles();
+    await copyAdditionalFilesAndFolders();
     await generateLayoutMain();
     await generateAstroConfig();
     const allDocs = await getDocs();

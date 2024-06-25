@@ -11,13 +11,25 @@ import {
 } from "./constants.js";
 import {layoutMainTemplate} from "../templates/LayoutMain.template.js";
 
-export function copyStaticFiles(): Promise<void> {
-    const sourcePath = path.join(CELESTIAL_DIR, 'static');
-    const targetPath = STYLEGUIDE_SRC_DIR;
+export async function copyAdditionalFilesAndFolders(): Promise<void[]> {
+    const config = getConfig();
 
-    return new Promise(resolve => {
-        copy(sourcePath, targetPath, () => resolve());
-    });
+    if (!config.copyAdditional) {
+        return;
+    }
+
+    const folders = Array.isArray(config.copyAdditional) ? config.copyAdditional : [config.copyAdditional];
+    const promises: Promise<void>[] = folders.map(folderName => {
+        const sourcePath = path.join(ORIG_DIR, folderName);
+        const targetPath = path.join(CELESTIAL_TMP_SUBDIR, folderName);
+
+        return new Promise(resolve => {
+            copy(sourcePath, targetPath, () => resolve());
+        });
+    })
+
+
+    return Promise.all(promises);
 }
 
 export function copyPublicFiles(): Promise<void> {
