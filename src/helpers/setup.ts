@@ -11,6 +11,15 @@ import {
 } from "./constants.js";
 import {layoutMainTemplate} from "../templates/LayoutMain.template.js";
 
+export function copyStaticFiles(): Promise<void> {
+    const sourcePath = path.join(CELESTIAL_DIR, 'static');
+    const targetPath = STYLEGUIDE_SRC_DIR;
+
+    return new Promise(resolve => {
+        copy(sourcePath, targetPath, () => resolve());
+    });
+}
+
 export async function copyAdditionalFilesAndFolders(): Promise<void[]> {
     const config = getConfig();
 

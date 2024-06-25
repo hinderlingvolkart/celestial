@@ -5,6 +5,7 @@ import {CELESTIAL_TMP_SUBDIR} from "../../helpers/constants.js";
 import {
     copyAdditionalFilesAndFolders,
     copyPublicFiles,
+    copyStaticFiles,
     generateAstroConfig,
     generateLayoutMain
 } from "../../helpers/setup.js";
@@ -15,6 +16,7 @@ export async function generate() {
     console.log('⚗️ Generating styleguide …');
 
     emptyDirSync(CELESTIAL_TMP_SUBDIR);
+    await copyStaticFiles();
     await copyPublicFiles();
     await copyAdditionalFilesAndFolders();
     await generateLayoutMain();
